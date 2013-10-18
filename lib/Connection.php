@@ -59,6 +59,11 @@ abstract class Connection
 	 */
 	public $protocol;
 	/**
+	 * The connection parameters used
+	 * @var array
+	 */
+	public $conn_params;
+	/**
 	 * Database's date format
 	 * @var string
 	 */
@@ -121,6 +126,7 @@ abstract class Connection
 		try {
 			$connection = new $fqclass($info);
 			$connection->protocol = $info->protocol;
+			$connection->conn_params = $info;
 			$connection->logging = $config->get_logging();
             if ($connection->logging) {
 			    $connection->logger = $config->get_logger();
