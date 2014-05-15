@@ -323,5 +323,4 @@ class Config extends Singleton
 	{
 		Cache::initialize($urls,$options);
 	}
-};
-?>
+}

@@ -1958,5 +1958,4 @@ class Model
 		}
 		return true;
 	}
-};
-?>
+}

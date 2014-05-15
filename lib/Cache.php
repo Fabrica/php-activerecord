@@ -105,4 +105,3 @@ class Cache
 		return $rval;
 	}
 }
-?>
