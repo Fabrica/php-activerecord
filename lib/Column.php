@@ -143,7 +143,11 @@ class Column
 		elseif (is_float($value) && $value >= PHP_INT_MAX)
 			return number_format($value, 0, '', '');
 
-		return (int) $value;
+		// remove non-numeric characters from the integer, otherwise
+		// the PHP int casting will chop up the int
+		// e.g. we'd want something like 1,000 to cast to 1000, but
+		// without this php will cast it as 1
+		return (int) preg_replace("/[^0-9\.]/","",$value);
 	}
 
 	/**
