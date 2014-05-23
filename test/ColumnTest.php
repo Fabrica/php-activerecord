@@ -81,11 +81,15 @@ class ColumnTest extends SnakeCase_PHPUnit_Framework_TestCase
 		$datetime = new DateTime('2001-01-01');
 		$this->assert_cast(Column::INTEGER,1,'1');
 		$this->assert_cast(Column::INTEGER,1,'1.5');
+		$this->assert_cast(Column::INTEGER,1000,'1,000');
+		$this->assert_cast(Column::INTEGER,1000,'1,000.50');
 		$this->assert_cast(Column::DECIMAL,1.5,'1.5');
 		$this->assert_cast(Column::DATETIME,$datetime,'2001-01-01');
 		$this->assert_cast(Column::DATE,$datetime,'2001-01-01');
 		$this->assert_cast(Column::DATE,$datetime,$datetime);
 		$this->assert_cast(Column::STRING,'bubble tea','bubble tea');
+		$this->assert_cast(Column::BOOLEAN,$this->conn->boolean_to_string(true),true);
+		$this->assert_cast(Column::BOOLEAN,$this->conn->boolean_to_string(false),false);
 		$this->assert_cast(Column::INTEGER,4294967295,'4294967295');
 		$this->assert_cast(Column::INTEGER,'18446744073709551615','18446744073709551615');
 
@@ -104,7 +108,8 @@ class ColumnTest extends SnakeCase_PHPUnit_Framework_TestCase
 			Column::INTEGER,
 			Column::DECIMAL,
 			Column::DATETIME,
-			Column::DATE);
+			Column::DATE,
+			Column::BOOLEAN);
 
 		foreach ($types as $type) {
 			$this->assert_cast($type,null,null);

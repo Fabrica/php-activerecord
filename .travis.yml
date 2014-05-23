@@ -4,6 +4,7 @@ before_script:
   - echo 'extension = "memcache.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - mysql -e 'CREATE DATABASE phpar_test;'
   - psql -c 'CREATE DATABASE phpar_test;' -U postgres
+  - phpunit --version
 
 services:
   - memcache

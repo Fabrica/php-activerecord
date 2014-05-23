@@ -18,6 +18,7 @@ class Column
 	const DATETIME	= 4;
 	const DATE		= 5;
 	const TIME		= 6;
+	const BOOLEAN	= 7;
 
 	/**
 	 * Map a type to an column type.
@@ -29,6 +30,8 @@ class Column
 		'timestamp'	=> self::DATETIME,
 		'date'		=> self::DATE,
 		'time'		=> self::TIME,
+
+		'boolean'	=> self::BOOLEAN,
 
 		'tinyint'	=> self::INTEGER,
 		'smallint'	=> self::INTEGER,
@@ -140,7 +143,11 @@ class Column
 		elseif (is_float($value) && $value >= PHP_INT_MAX)
 			return number_format($value, 0, '', '');
 
-		return (int) $value;
+		// remove non-numeric characters from the integer, otherwise
+		// the PHP int casting will chop up the int
+		// e.g. we'd want something like 1,000 to cast to 1000, but
+		// without this php will cast it as 1
+		return (int) preg_replace("/[^0-9\.]/","",$value);
 	}
 
 	/**
@@ -161,6 +168,7 @@ class Column
 			case self::STRING:	return (string)$value;
 			case self::INTEGER:	return static::castIntegerSafely($value);
 			case self::DECIMAL:	return (double)$value;
+			case self::BOOLEAN:	return $connection->boolean_to_string($value);
 			case self::DATETIME:
 			case self::DATE:
 				if (!$value)

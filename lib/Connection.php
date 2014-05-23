@@ -37,16 +37,32 @@ abstract class Connection
 	 */
 	private $logging = false;
 	/**
-	 * Contains a Logger object that must impelement a log() method.
+	 * Contains a Logger object that must impelement a logging method.
 	 *
+     * The logging method is defined in the property $logger_method and
+     * defaults to 'log'
+     *
 	 * @var object
 	 */
 	private $logger;
+
+    /**
+     * contains the name of the logging method
+     *
+     * @var mixed
+     * @access private
+     */
+    private $logger_method;
 	/**
 	 * The name of the protocol that is used.
 	 * @var string
 	 */
 	public $protocol;
+	/**
+	 * The connection parameters used
+	 * @var array
+	 */
+	public $conn_params;
 	/**
 	 * Database's date format
 	 * @var string
@@ -110,8 +126,12 @@ abstract class Connection
 		try {
 			$connection = new $fqclass($info);
 			$connection->protocol = $info->protocol;
+			$connection->conn_params = $info;
 			$connection->logging = $config->get_logging();
-			$connection->logger = $connection->logging ? $config->get_logger() : null;
+            if ($connection->logging) {
+			    $connection->logger = $config->get_logger();
+                $connection->logger_method = $config->get_logger_method();
+            }
 
 			if (isset($info->charset))
 				$connection->set_encoding($info->charset);
@@ -504,6 +524,22 @@ abstract class Connection
 			$datetime = null;
 		}
 		return $datetime;
+	}
+
+	/**
+	 * Converts a boolean value to a string representation.
+	 *
+	 * The converted string representation should be in a format acceptable by the
+	 * underlying database connection.
+	 *
+	 * @param mixed $value
+	 * @access public
+	 * @return string
+	 */
+	public function boolean_to_string($value)
+	{
+		$boolean = (boolean)$value;
+		return (string)$boolean;
 	}
 
 	/**
