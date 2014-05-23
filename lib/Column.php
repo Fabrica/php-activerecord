@@ -148,9 +148,10 @@ class Column
 	 *
 	 * @param mixed $value The value to cast
 	 * @param Connection $connection The Connection this column belongs to
+	 * @param boolean $db_format Flag of whether to cast value from the database format
 	 * @return mixed type-casted value
 	 */
-	public function cast($value, $connection)
+	public function cast($value, $connection, $db_format = false)
 	{
 		if ($value === null)
 			return null;
@@ -170,8 +171,21 @@ class Column
 
 				if ($value instanceof \DateTime)
 					return new DateTime($value->format('Y-m-d H:i:s T'));
-
-				return $connection->string_to_datetime($value);
+				if($db_format)
+				{
+					return $connection->string_to_datetime($value);
+				}
+				else
+				{
+					try
+					{
+						return new DateTime($value);
+					}
+					catch(\Exception $e)
+					{
+						return null;
+					}
+				}
 		}
 		return $value;
 	}
@@ -193,3 +207,4 @@ class Column
 		return $this->type;
 	}
 }
+?>
